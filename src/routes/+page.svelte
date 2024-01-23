@@ -1,3 +1,12 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
-<button class="btn btn-primary">Hello daisyUI</button>
+<script lang="ts">
+	import Login from '$lib/Login.svelte';
+	import { db, currentUser } from '$lib/database';
+	import Posts from '$lib/Posts.svelte';
+</script>
+
+<h1>Chat</h1>
+
+{#if $currentUser}
+	<Posts />
+{/if}
+<Login />
