@@ -9,8 +9,7 @@
 	onMount(async () => {
 		const postsList = await db.collection('posts').getList(1, 50, {
 			sort: 'created',
-			order: 'desc',
-			expand: 'user'
+			expand: 'poster'
 		});
 
 		posts = postsList.items;
@@ -22,7 +21,7 @@
 				const poster = await db.collection('users').getOne(record.poster);
 
 				record.expand = { poster };
-				posts = [record, ...posts];
+				posts = [...posts, record]; // This line triggers Svelte's reactivity
 			}
 
 			if (action === 'delete') {
@@ -51,15 +50,20 @@
 
 <div class="posts">
 	{#each posts as post (post.id)}
-		<div class="pst">
-			<div>
-				<p class="post-text">{post.text}</p>
+		<div class="chat {$currentUser?.id === post.expand.poster.id ? 'chat-end' : 'chat-start'}">
+			<div class="chat-header">
+				{post.expand.poster.username}
+				<time class="text-xs opacity-50">{post.created}</time>
 			</div>
+			<div class="chat-bubble">{post.text}</div>
+			<div class="chat-footer opacity-50">footer</div>
 		</div>
 	{/each}
 </div>
 
-<form on:submit|preventDefault={createPost}>
-	<input placeholder="Message" type="text" bind:value={newMessage} />
-	<button type="submit">Send</button>
-</form>
+<div class="absolute bottom-4 left-1/4 bg-gray-200 w-1/2 p-4">
+	<form on:submit|preventDefault={createPost}>
+		<input placeholder="Message" type="text" bind:value={newMessage} />
+		<button type="submit">Send</button>
+	</form>
+</div>
