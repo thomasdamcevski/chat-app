@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { db, currentUser } from '$lib/database';
-	import { writable } from 'svelte/store';
 	import { scrollStore } from './scrollStore';
+	import { formatDistanceToNow } from 'date-fns';
 
 	let newMessage: string;
 	let posts: any[] = [];
@@ -52,6 +52,11 @@
 
 		await db.collection('posts').create(data);
 	}
+
+	function formatTimestamp(timestamp: string) {
+		const date = new Date(timestamp);
+		return formatDistanceToNow(date, { addSuffix: true });
+	}
 </script>
 
 <div class="posts">
@@ -59,10 +64,10 @@
 		<div class="chat {$currentUser?.id === post.expand.poster.id ? 'chat-end' : 'chat-start'}">
 			<div class="chat-header">
 				{post.expand.poster.username}
-				<time class="text-xs opacity-50">{post.created}</time>
+				<time class="text-xs opacity-50">{formatTimestamp(post.created)}</time>
 			</div>
 			<div class="chat-bubble">{post.text}</div>
-			<div class="chat-footer opacity-50">footer</div>
+			<div class="chat-footer opacity-50"></div>
 		</div>
 	{/each}
 </div>
