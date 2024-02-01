@@ -1,6 +1,8 @@
 <script lang="ts">
-	import { onMount, onDestroy, createEventDispatcher } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import { db, currentUser } from '$lib/database';
+	import { writable } from 'svelte/store';
+	import { scrollStore } from './scrollStore';
 
 	let newMessage: string;
 	let posts: any[] = [];
@@ -27,7 +29,11 @@
 			if (action === 'delete') {
 				posts = posts.filter((post) => post.id !== record.id);
 			}
+
+			scrollStore.set(true);
 		});
+
+		scrollStore.set(true);
 	});
 
 	onDestroy(() => {

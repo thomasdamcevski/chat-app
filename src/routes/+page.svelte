@@ -2,6 +2,27 @@
 	import Login from '$lib/Login.svelte';
 	import { db, currentUser } from '$lib/database';
 	import Posts from '$lib/Posts.svelte';
+	import { scrollStore } from '$lib/scrollStore';
+	import { tick } from 'svelte';
+
+	let chatContainer: HTMLDivElement;
+
+	async function scrollToBottom() {
+		await tick();
+		if (chatContainer) {
+			chatContainer.scrollTop = chatContainer.scrollHeight;
+		}
+	}
+
+	// Scroll to the bottom whenever a new message is added
+	$: {
+		scrollStore.subscribe((value) => {
+			if (value) {
+				scrollToBottom();
+				scrollStore.set(false); // Reset the store's value
+			}
+		});
+	}
 </script>
 
 <div class="flex flex-row h-screen">
@@ -9,7 +30,7 @@
 		<!-- Content for the left section -->
 		<Login />
 	</div>
-	<div class="basis-1/2 bg-primary-content overflow-y-auto">
+	<div bind:this={chatContainer} class="basis-1/2 bg-primary-content overflow-y-auto">
 		<div class="basis-1/2 bg-primary-content p-4 overflow-y-auto">
 			<!-- Content for the middle section -->
 			<div class="mb-20">
