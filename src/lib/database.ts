@@ -3,7 +3,7 @@ import PocketBase from "pocketbase";
 import { writable } from "svelte/store";
 
 // Hosting using pockethost
-const url = "https://complex-important.pockethost.io/";
+const url = 'https://complex-important.pockethost.io/'
 export const db = new PocketBase(url);
 
 // The user that is currently logged in
